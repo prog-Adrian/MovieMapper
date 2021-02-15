@@ -1,3 +1,4 @@
+package movieMapper;
 import java.util.Scanner;
 
 public class Main {
