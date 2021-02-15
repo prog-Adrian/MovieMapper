@@ -3,7 +3,7 @@ import java.util.*;
 import java.io.*;
 
 
-public class backEnd {
+public class Backend {
     // Instantiating all the variables for the backend
     List<String> genreList;
     List<String> avgRatingList;
@@ -13,12 +13,12 @@ public class backEnd {
     // Added a main function for testing the class
     // Reminder: Remove before final presentation/submission
     public static void main(String[] args){
-        backEnd tester1 = new backEnd();
+        Backend tester1 = new Backend();
         tester1.addGenre("Pokemon");
         tester1.addAvgRating("10");
     }
 
-    public backEnd(){
+    public Backend(){
         // Creating the Hash table to hold the movie genre ratings 
         this.movieTable = new Hashtable<String, String>();
         // Init for the data structures
@@ -29,7 +29,7 @@ public class backEnd {
     }
 
     // Backend constructor when taking an file/dataset for the input
-    public backEnd(FileReader inputFile){
+    public Backend(FileReader inputFile){
         // Instantiate the Data Wrangler object
         // MovieReaderInterface
         // Using input file

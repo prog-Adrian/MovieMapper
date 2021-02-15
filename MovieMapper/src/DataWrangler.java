@@ -1,6 +1,6 @@
 
 
 
-public class dataWrangler{
+public class DataWrangler{
     String name = "Hello";
 }

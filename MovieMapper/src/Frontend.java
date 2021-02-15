@@ -1,6 +1,10 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Main {
+public class Frontend {
   
     public static void main(String[] args) {
       Scanner scanner = new Scanner(System.in);
@@ -8,10 +12,23 @@ public class Main {
       System.out.println("Please enter the path to the file which contains your movie database: ");
       filePath = scanner.nextLine();
       
-      run(filePath);
+      Backend be = null;
+      try {
+        be = new Backend(new FileReader(filePath));
+      } catch (FileNotFoundException e) {
+        System.out.println("File not found.");
+        System.exit(0);
+      }
+      
+      // TEST CODE - DELETE BEFORE SUBMISSION
+      be.addGenre("Test");
+      be.addGenre("Test2");
+      // TEST CODE - DELETE BEFORE SUBMISSION
+      
+      run(be);
     }
     
-    public static void run(String csvFilePath) {
+    public static void run(Backend backend) {
       Scanner scanner = new Scanner(System.in);
       String input;
       Mode currentMode = Mode.BASE;
@@ -37,7 +54,14 @@ public class Main {
         
         if(currentMode == Mode.GENRE_SELECT) {
           System.out.println("You have chosen the Genre Select mode. Here are the available genres for you to search by: \n");
-          System.out.println("TODO: LIST AVAILABLE GENRES");
+          
+          int counter = 0;
+          String print = "";
+          for(String s : backend.getGenres()) {
+            print += "[" + counter + "] " + s + "\n";
+            counter++;
+          }
+          System.out.println(print);
           System.out.println("Type in the number next to the genre to select it. Type 'x' to go back to the main menu.");
           
           input = scanner.next();
@@ -52,7 +76,18 @@ public class Main {
           
           input = scanner.next();
           
-          if(input.equalsIgnoreCase("x")) currentMode = Mode.BASE;
+          if(input.equalsIgnoreCase("x"))
+            currentMode = Mode.BASE;
+          
+          else {
+            try {
+              int ratingSelected = Integer.parseInt(input);
+              System.out.println(ratingSelected);
+              backend.addAvgRating(input);
+            } catch(NumberFormatException e) {
+              System.out.println("That is not a valid option.");
+            }
+          }
         }
         
         
