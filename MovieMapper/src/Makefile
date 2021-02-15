@@ -1,8 +1,5 @@
-
-
 backEnd.class: backEnd.java
     javac -d . backEnd.java
-
 
 Main.class: Main.java backEnd.java
 	javac -d . dataWrangler.java	

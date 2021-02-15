@@ -97,7 +97,6 @@ public class Frontend {
         }
       }
     }
-// End of class Main
  }
 
     enum Mode {
