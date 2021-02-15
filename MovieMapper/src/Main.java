@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -43,6 +44,7 @@ public class Main {
         input = scanner.next();
         
         if(input.equalsIgnoreCase("x")) currentMode = Mode.BASE;
+        
       }
       
       if(currentMode == Mode.RATING_SELECT) {
@@ -53,6 +55,15 @@ public class Main {
         input = scanner.next();
         
         if(input.equalsIgnoreCase("x")) currentMode = Mode.BASE;
+        
+        else {
+          try {
+            int ratingSelected = Integer.parseInt(input);
+            System.out.println(ratingSelected);
+          } catch(InputMismatchException e) {
+            System.out.println("");
+          }
+        }
       }
       
       
