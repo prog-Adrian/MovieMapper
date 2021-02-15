@@ -14,7 +14,7 @@ public class Main {
   
   public static void run(String csvFilePath) {
     Scanner scanner = new Scanner(System.in);
-    char inputChar;
+    String input;
     Mode currentMode = Mode.BASE;
     
     while(true) {
@@ -26,12 +26,12 @@ public class Main {
         
         System.out.println("\n[g] Enter genre select mode       [r] Enter rating select mode        [x] Exit the program");
         
-        inputChar = scanner.next().charAt(0);
+        input = scanner.next();
         
-        switch(inputChar) {
-          case 'g': currentMode = Mode.GENRE_SELECT; break;
-          case 'r': currentMode = Mode.RATING_SELECT; break;
-          case 'x': currentMode = Mode.EXIT; break;
+        switch(input) {
+          case "g": currentMode = Mode.GENRE_SELECT; break;
+          case "r": currentMode = Mode.RATING_SELECT; break;
+          case "x": currentMode = Mode.EXIT; break;
         }
         
       }
@@ -41,9 +41,9 @@ public class Main {
         System.out.println("TODO: LIST AVAILABLE GENRES");
         System.out.println("Type in the number next to the genre to select it. Type 'x' to go back to the main menu.");
         
-        inputChar = scanner.next().charAt(0);
+        input = scanner.next();
         
-        if(inputChar == 'x') currentMode = Mode.BASE;
+        if(input.equalsIgnoreCase("x")) currentMode = Mode.BASE;
       }
       
       if(currentMode == Mode.RATING_SELECT) {
@@ -51,9 +51,9 @@ public class Main {
         System.out.println("[0-10]");
         System.out.println("Type in the rating you would like to search by. Type 'x' to go back to the main menu.");
         
-        inputChar = scanner.next().charAt(0);
+        input = scanner.next();
         
-        if(inputChar == 'x') currentMode = Mode.BASE;
+        if(input.equalsIgnoreCase("x")) currentMode = Mode.BASE;
       }
       
       
