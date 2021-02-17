@@ -16,6 +16,16 @@ public class Backend {
         Backend tester1 = new Backend();
         tester1.addGenre("Pokemon");
         tester1.addAvgRating("10");
+        tester1.movieTable.put("Horror","9");
+        tester1.movieTable.put("Comedy","10");
+        tester1.movieTable.put("Drama","8");
+        tester1.movieTable.put("Action","7");
+        tester1.movieTable.put("Thriller","5");
+        List<String> tempList = tester1.getAllGenres();
+        for(String k: tempList)
+        {
+        	System.out.println(k);
+        }
     }
 
     public Backend(){
@@ -101,35 +111,20 @@ public class Backend {
     Cannot make this function yet due to not having the MovieInterface
     */
 
-    /*
     public List<String> getAllGenres(){
-    }
+    	List<String> ans = new ArrayList<String>(this.movieTable.size());
+    	for(String k: this.movieTable.keySet()) {
+    		ans.add(k);
+    	}
+    	return ans;
     
+    }
+    /*
     Cannot make this function yet due not having the data set code
 
     Function is suppose to give all the Genres in the data set
-    */
+  	*/
 
 }
 
 
-
-/*
-
-Note:
-    This is only here for refrence
-    Delete before final submission
-
-public interface BackendInterface{
-
-    public void addGenre(String genre);
-    public void addAvgRating(String rating);
-    public void rmeoveGenre(String genre);
-    public void removeAvgRating(String rating);
-    public List<String> getGenre();
-    public List<String> getAvgRatings();
-    public int getNumberofMovies();
-    public List<MovieInterface> getThreeMovies(int startingIndex);
-    public List<String> getAllGenres();
-}
-*/
