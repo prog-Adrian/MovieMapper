@@ -101,7 +101,7 @@ public class DummyBackend {
 
     // Returns the number of movies currnetly in the selection / outputList
     public int getNumberOfMovies(){
-        return this.outputList.size();
+        return this.allMovies.size();
     }
 
     public List<DummyMovie> getThreeMovies(int startingIndex) {
