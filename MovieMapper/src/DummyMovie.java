@@ -61,4 +61,13 @@ public class DummyMovie implements MovieInterface {
     return 0;
   }
   
+  @Override
+  public String toString() {
+    String genres = "";
+    for(String s : this.genres) {
+      genres += (s + " ");
+    }
+    return(this.title + ", " + this.year + " | " + genres + "| " + this.director + " | " + this.description + " (" + this.avgVote + ")");
+  }
+  
 }

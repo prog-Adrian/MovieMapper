@@ -50,7 +50,7 @@ public class Frontend {
 
         int counter = currentIndex + 1;
         for (DummyMovie m : backend.getThreeMovies(currentIndex)) {
-          System.out.println(counter + ". " + m.getTitle());
+          System.out.println(counter + ". " + m.toString());
           counter++;
         }
 
