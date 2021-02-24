@@ -124,6 +124,7 @@ public class Backend {
 
     Function is suppose to give all the Genres in the data set
   	*/
+    
 
 }
 
