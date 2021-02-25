@@ -7,9 +7,9 @@ public class DummyMovie implements MovieInterface {
   private String director;
   private String description;
   private Float avgVote;
-  
-  
-  
+
+
+
   public DummyMovie(String title, int year, List<String> genres, String director,
       String description, Float avgVote) {
     this.title = title;
@@ -57,17 +57,21 @@ public class DummyMovie implements MovieInterface {
 
   @Override
   public int compareTo(MovieInterface otherMovie) {
-    // TODO Auto-generated method stub
+    if (this.avgVote > otherMovie.getAvgVote())
+      return 1;
+    else if (this.avgVote < otherMovie.getAvgVote())
+      return -1;
     return 0;
   }
-  
+
   @Override
   public String toString() {
     String genres = "";
-    for(String s : this.genres) {
+    for (String s : this.genres) {
       genres += (s + " ");
     }
-    return(this.title + ", " + this.year + " | " + genres + "| " + this.director + " | " + this.description + " (" + this.avgVote + ")");
+    return (this.title + ", " + this.year + " | " + genres + "| " + this.director + " | "
+        + this.description + " (" + this.avgVote + ")");
   }
-  
+
 }

@@ -21,9 +21,7 @@ public class MovieDataReader implements MovieDataReaderInterface {
       String[] data = row.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
       String genres = data[3].replaceAll("\"", "").replaceAll(" ", "");
       String directors = data[7].replaceAll("\"", "");
-      
-      //System.out.println("" + data[0] + " | " + data[2] + " | " + genres + " | " + data[7] + " | " + data[11].replaceAll("\"", "") + " | " + data[12]);
-      
+            
       toReturn.add(new DummyMovie(data[0], Integer.parseInt(data[2].trim()), Arrays.asList(genres.split(",")), directors, data[11].replaceAll("\"", ""), Float.parseFloat(data[12].trim())));
     }
     
