@@ -48,6 +48,10 @@ public class Frontend {
                 + (currentIndex + 1) + "\n");
 
         int counter = currentIndex + 1;
+        if(backend.getThreeMovies(currentIndex).isEmpty()) {
+          System.out.println("Add some search criteria by going to the genre or rating select modes!");
+        }
+        
         for (MovieInterface m : backend.getThreeMovies(currentIndex)) {
           System.out.println(counter + ". " + m.toString());
           counter++;
@@ -74,7 +78,7 @@ public class Frontend {
           try {
             int index = Integer.parseInt(input);
             if (index - 1 >= backend.getNumberOfMovies()) {
-              System.out.println("\nToo far!");
+              System.out.println("\nThere aren't that many movies in the list!");
             } else {
               currentIndex = index - 1;
             }

@@ -222,7 +222,7 @@ public class Backend implements BackendInterface{
 				}
 			}
 		} else if(startingIndex > this.possibleMovies.size() || startingIndex == this.possibleMovies.size()) {
-			System.out.println("Not a valid index");
+			
 		}
 		else {
 			for(int j = startingIndex; j < this.possibleMovies.size();j++) {
