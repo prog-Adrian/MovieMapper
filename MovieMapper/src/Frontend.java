@@ -1,15 +1,18 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Frontend {
 
   public static void main(String[] args) {
     // Scanner scanner = new Scanner(System.in);
-    String filePath = "C:\\Users\\ozapa\\Downloads\\hwi_642.exe";
+    String filePath = "C:\\Users\\ozapa\\Downloads\\201-5-WS2.pdf";
+    System.out.println(filePath);
     // System.out.println("Please enter the path to the file which contains your movie database: ");
     // filePath = scanner.nextLine();
 
@@ -124,6 +127,12 @@ public class Frontend {
       }
 
       if (currentMode == Mode.RATING_SELECT) {
+        List<String> availableRatings = new ArrayList<String>();
+        for(int i = 0; i <= 10; i++) {
+          availableRatings.add(String.valueOf(i));
+        }
+        
+        
         // System.out.println("You have chosen the Rating Select mode. Here are the available
         // ratings for you to search by: \n");
         System.out.println("Ratings currently selected: \n");
@@ -134,9 +143,20 @@ public class Frontend {
             System.out.println(s);
           }
         }
-        System.out.println("\n[0-10]");
+        
+        System.out.println("\nRatings available to select: \n");
+        if(backend.getAvgRatings().containsAll(availableRatings)) {
+          System.out.println("All ratings are currently selected.");
+        } else {
+          for(String s : availableRatings) {
+            if(backend.getAvgRatings().contains(s))
+              continue;
+            System.out.println(s);
+          }
+        }
+        
         System.out.println(
-            "Type in the rating you would like to toggle. Type 'x' to go back to the main menu.");
+            "\nType in the rating you would like to toggle. Type 'x' to go back to the main menu.");
         System.out.print("Command: ");
 
         input = scanner.next();
@@ -165,7 +185,7 @@ public class Frontend {
 
       if (currentMode == Mode.EXIT) {
         System.out.println("Thank you for using our Movie Mapper!");
-        System.exit(0);
+        break;
       }
     }
   }

@@ -16,9 +16,15 @@ public class MovieDataReader implements MovieDataReaderInterface {
     
     BufferedReader reader = new BufferedReader(inputFileReader);
     String headerLine = reader.readLine();
+    int numColumns = headerLine.split(",").length;
     String row;
     while((row = reader.readLine()) != null) {
       String[] data = row.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+      
+      if(data.length != numColumns) {
+        throw new DataFormatException("Inconsistent file format!");
+      }
+      
       String genres = data[3].replaceAll("\"", "").replaceAll(" ", "");
       String directors = data[7].replaceAll("\"", "");
             
