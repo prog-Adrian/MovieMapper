@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class DummyMovie implements MovieInterface {
+public class DataWrangler implements MovieInterface {
   private String title;
   private int year;
   private List<String> genres;
@@ -10,7 +10,7 @@ public class DummyMovie implements MovieInterface {
   
   
   
-  public DummyMovie(String title, int year, List<String> genres, String director,
+  public DataWrangler(String title, int year, List<String> genres, String director,
       String description, Float avgVote) {
     this.title = title;
     this.year = year;
@@ -57,8 +57,37 @@ public class DummyMovie implements MovieInterface {
 
   @Override
   public int compareTo(MovieInterface otherMovie) {
-    // TODO Auto-generated method stub
-    return 0;
+	    if ((float)this.avgVote > (float)otherMovie.getAvgVote())
+	      return 1;
+	    else if ((float)this.avgVote < (float)otherMovie.getAvgVote())
+	      return -1;
+	    return 0;
   }
   
+  @Override
+  public String toString() {
+    String genres = "";
+    for(String s : this.genres) {
+      genres += (s + " ");
+    }
+    return(this.title + ", " + this.year + " | " + genres + "| " + this.director + " | " + this.description + " (" + this.avgVote + ")");
+  }
+  
+  @Override
+  public int hashCode() {
+	 return Math.abs(Integer.parseInt(this.genres.get(0)));
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+	  if(obj == this) {
+		  DataWrangler dt = (DataWrangler) obj;
+		  if(this.title.equals(dt.getTitle()) && this.toString().equals(dt.toString())) {
+			  return true;
+		  }
+	  }
+	  
+	 
+	  return false;
+  }
 }
