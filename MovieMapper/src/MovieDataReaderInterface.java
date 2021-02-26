@@ -6,7 +6,7 @@ import java.util.zip.DataFormatException;
 
 public interface MovieDataReaderInterface {
   
-  public List<DummyMovie> readDataSet(FileReader inputFileReader)
+  public List<Movie> readDataSet(FileReader inputFileReader)
     throws FileNotFoundException, IOException, DataFormatException;
 
 }

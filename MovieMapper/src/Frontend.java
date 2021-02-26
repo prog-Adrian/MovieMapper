@@ -11,14 +11,14 @@ public class Frontend {
 
   public static void main(String[] args) {
     // Scanner scanner = new Scanner(System.in);
-    String filePath = "C:\\Users\\ozapa\\Downloads\\201-5-WS2.pdf";
+    String filePath = "C:\\Users\\ozapa\\Downloads\\movies.csv";
     System.out.println(filePath);
     // System.out.println("Please enter the path to the file which contains your movie database: ");
     // filePath = scanner.nextLine();
 
-    DummyBackend be = null;
+    Backend be = null;
     try {
-      be = new DummyBackend(new FileReader(filePath));
+      be = new Backend(new FileReader(filePath));
       // be = new Backend(new FileReader(args[0]));
     } catch (FileNotFoundException e) {
       System.out.println("File not found.");
@@ -26,17 +26,13 @@ public class Frontend {
     }
 
     // TEST CODE - DELETE BEFORE SUBMISSION
-    be.movieTable.put("Romance", "5");
-    be.movieTable.put("Tragedy", "3");
-    be.movieTable.put("Horror", "4");
-    be.movieTable.put("Comedy", "6");
-    be.movieTable.put("Musical", "34");
+
     // TEST CODE - DELETE BEFORE SUBMISSION
 
     run(be);
   }
 
-  public static void run(DummyBackend backend) {
+  public static void run(Backend backend) {
     Scanner scanner = new Scanner(System.in);
     String input;
     Mode currentMode = Mode.BASE;
@@ -52,7 +48,7 @@ public class Frontend {
                 + (currentIndex + 1) + "\n");
 
         int counter = currentIndex + 1;
-        for (DummyMovie m : backend.getThreeMovies(currentIndex)) {
+        for (MovieInterface m : backend.getThreeMovies(currentIndex)) {
           System.out.println(counter + ". " + m.toString());
           counter++;
         }

@@ -10,9 +10,9 @@ import java.util.zip.DataFormatException;
 public class MovieDataReader implements MovieDataReaderInterface {
 
   @Override
-  public List<DummyMovie> readDataSet(FileReader inputFileReader)
+  public List<Movie> readDataSet(FileReader inputFileReader)
       throws FileNotFoundException, IOException, DataFormatException {
-    List<DummyMovie> toReturn = new ArrayList<DummyMovie>();
+    List<Movie> toReturn = new ArrayList<Movie>();
     
     BufferedReader reader = new BufferedReader(inputFileReader);
     String headerLine = reader.readLine();
@@ -28,7 +28,7 @@ public class MovieDataReader implements MovieDataReaderInterface {
       String genres = data[3].replaceAll("\"", "").replaceAll(" ", "");
       String directors = data[7].replaceAll("\"", "");
             
-      toReturn.add(new DummyMovie(data[0], Integer.parseInt(data[2].trim()), Arrays.asList(genres.split(",")), directors, data[11].replaceAll("\"", ""), Float.parseFloat(data[12].trim())));
+      toReturn.add(new Movie(data[0], Integer.parseInt(data[2].trim()), Arrays.asList(genres.split(",")), directors, data[11].replaceAll("\"", ""), Float.parseFloat(data[12].trim())));
     }
     
     

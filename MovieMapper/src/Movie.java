@@ -1,16 +1,16 @@
 import java.util.List;
 
-public class DummyMovie implements MovieInterface {
+public class Movie implements MovieInterface {
   private String title;
   private int year;
   private List<String> genres;
   private String director;
   private String description;
   private Float avgVote;
-
-
-
-  public DummyMovie(String title, int year, List<String> genres, String director,
+  
+  
+  
+  public Movie(String title, int year, List<String> genres, String director,
       String description, Float avgVote) {
     this.title = title;
     this.year = year;
@@ -57,21 +57,37 @@ public class DummyMovie implements MovieInterface {
 
   @Override
   public int compareTo(MovieInterface otherMovie) {
-    if (this.avgVote > otherMovie.getAvgVote())
-      return 1;
-    else if (this.avgVote < otherMovie.getAvgVote())
-      return -1;
-    return 0;
+        if ((float)this.avgVote > (float)otherMovie.getAvgVote())
+          return 1;
+        else if ((float)this.avgVote < (float)otherMovie.getAvgVote())
+          return -1;
+        return 0;
   }
-
+  
   @Override
   public String toString() {
     String genres = "";
-    for (String s : this.genres) {
+    for(String s : this.genres) {
       genres += (s + " ");
     }
-    return (this.title + ", " + this.year + " | " + genres + "| " + this.director + " | "
-        + this.description + " (" + this.avgVote + ")");
+    return(this.title + ", " + this.year + " | " + genres + "| " + this.director + " | " + this.description + " (" + this.avgVote + ")");
   }
-
+  
+  @Override
+  public int hashCode() {
+     return Math.abs(Integer.parseInt(this.genres.get(0)));
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+      if(obj == this) {
+          Movie dt = (Movie) obj;
+          if(this.title.equals(dt.getTitle()) && this.toString().equals(dt.toString())) {
+              return true;
+          }
+      }
+      
+     
+      return false;
+  }
 }
