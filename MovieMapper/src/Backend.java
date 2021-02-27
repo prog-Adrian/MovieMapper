@@ -7,15 +7,15 @@ import java.util.Collections;
 
 public class Backend implements BackendInterface{
     // Instantiating all the variables for the backend
-    List<DataWrangler> possibleMovies;
+    List<MovieInterface> possibleMovies;
     List<String> genre;
     List<String> rating;
     List<MovieInterface> outputList;
     List<DataWrangler> singleCriteria;
     hashTableMap<String, List<DataWrangler>> genreTable;
     List<DataWrangler> genreList;
-    List<DataWrangler> possibleRatings;
-    List<DataWrangler> possibleGenres;
+    List<MovieInterface> possibleRatings;
+    List<MovieInterface> possibleGenres;
     List<DataWrangler> dataSet;
     
     // Added a main function for testing the class
@@ -24,19 +24,12 @@ public class Backend implements BackendInterface{
         try {
 			Backend tester2 = new Backend(new FileReader("C:\\Users\\zxcvt\\Documents\\CS400\\MovieMapper\\movies.csv"));
 	        System.out.println(tester2.getNumberOfMovies());
-	        tester2.addGenre("Horror");
+	        //tester2.addGenre("Horror");
 	        tester2.addAvgRating("2");
-	        for(String rt : tester2.getGenres()) {
-	        	System.out.println(rt);
-	        }
-	        for(String ag : tester2.getAvgRatings()) {
-	        	System.out.println(ag);
-	        }
 	        System.out.println(tester2.getNumberOfMovies());
-	        for(MovieInterface mv :tester2.getThreeMovies(0)) {
+	        for(MovieInterface mv :tester2.getThreeMovies(22)) {
 	        	System.out.println(mv.toString());
 	        }
-	        System.out.println(tester2.getAllGenres());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,8 +50,8 @@ public class Backend implements BackendInterface{
 				// Creating the Hash table to hold the movie genre ratings 
 		        this.genreTable = new hashTableMap<String, List<DataWrangler>>();
 		        this.genreList = new ArrayList<DataWrangler>();
-		        this.possibleRatings = new ArrayList<DataWrangler>();
-		        this.possibleGenres = new ArrayList<DataWrangler>();
+		        this.possibleRatings = new ArrayList<MovieInterface>();
+		        this.possibleGenres = new ArrayList<MovieInterface>();
 		        Collections.sort(this.dataSet);
 		        List<String> allGenres = getAllGenres();
 		        for(String aG : allGenres) {
@@ -73,7 +66,7 @@ public class Backend implements BackendInterface{
 		        	this.genreTable.put(aG, this.genreList);
 		        }
 		        // Init for the data structures
-		        this.possibleMovies = new ArrayList<DataWrangler>();
+		        this.possibleMovies = new ArrayList<MovieInterface>();
 		        this.genre = new ArrayList<String>();
 		        this.rating = new ArrayList<String>();
 		        this.outputList = new ArrayList<MovieInterface>();
@@ -92,14 +85,8 @@ public class Backend implements BackendInterface{
         // genre or rating to select movies by. The movies returned by the back end will be all movies in the selected 
         // rating ranges that have all of the selected genres. If there is no genre selected, 
         // the list of movies returned by the backend is empty
-    	List<DataWrangler> tempGenres = new ArrayList<DataWrangler>();
     	if(this.genre.contains(genre) == false) {
     		this.genre.add(genre);
-    		System.out.println("The genre has been added");
-    	} else {
-            System.out.println("The genre has not been added");
-        } 
-    	if(this.genre.size() > 0) {
     		PairNodeList<String, List<DataWrangler>>[] pairs = this.genreTable.getPairs();
     		for(int i = 0; i < pairs.length;i++) {
     			if(pairs[i]!= null) {
@@ -118,13 +105,12 @@ public class Backend implements BackendInterface{
     				
     			}
     		}
-    	}
-    	if(this.genre.size() == 1 && this.rating.size() == 0) {
-    		this.singleCriteria = this.possibleGenres;
-    		for(DataWrangler dat : this.singleCriteria) {
-        		System.out.println(dat.toString());
-        	}
-    		System.out.println(singleCriteria.size());
+    		System.out.println("The genre has been added");
+    	} else {
+            System.out.println("The genre has not been added");
+        }
+    	if(this.genre.size() >= 1 && this.rating.size() == 0) {
+    		addMovies(this.possibleGenres);
     	}
         
     }
@@ -133,55 +119,50 @@ public class Backend implements BackendInterface{
     // This sorts through all the possible genres set and finds the ratings that are within the range of rating + 1
     // also inclusive for the value of rating
     public void addAvgRating(String rating){
-    	List<DataWrangler> tempRatings = new ArrayList<DataWrangler>();
+    	List<MovieInterface> tempRatings = new ArrayList<MovieInterface>();
         if(this.rating.contains(rating) == false){
             this.rating.add(rating);
-            System.out.println("The rating has been added");
-        } else {
-            System.out.println("The rating has not been added");
-        }
-        if(this.rating.size() > 0){
-        	for(String rat : this.rating) {
-        		for(DataWrangler dw : this.possibleGenres) {
+            for(String rat : this.rating) {
+        		for(MovieInterface dw : this.possibleGenres) {
             		float upperLim = Float.parseFloat(rat) + (float) 1;
             		if((dw.getAvgVote() >= Float.parseFloat(rat)) && (dw.getAvgVote() < upperLim) && this.possibleRatings.contains(dw) == false) {
             			this.possibleRatings.add(dw);
             		}
             	}
         	}
-        	if(this.rating.size() > 0 && this.possibleGenres.size() == 0) {
-        		PairNodeList<String, List<DataWrangler>>[] pairs = this.genreTable.getPairs();
-            	for(String rate : this.rating) {
-            		float tempRate = Float.parseFloat(rate);
-            		float upperLim = tempRate + (float) 1;
-            		for(int i = 0; i < pairs.length;i++) {
-            			if(pairs[i] != null) {
-            				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
-            				while(currList != null) {
-            					List<DataWrangler> tempList = pairs[i].getValue();
-                				for(int j = 0; j < tempList.size(); j++) {
-                					DataWrangler currNode = tempList.get(j);
-                					if(currNode.getAvgVote() >= tempRate && currNode.getAvgVote() < upperLim) {
-                						if(tempRatings.contains(currNode) == false) {
-                							tempRatings.add(currNode);
-                						}
-                					}
-                					
-                				}
-                				currList = currList.getNext();
+            if(this.rating.size() > 0 && this.genre.size() == 0) {
+            	if(this.rating.size() > 0 && this.possibleGenres.size() == 0) {
+            		PairNodeList<String, List<DataWrangler>>[] pairs = this.genreTable.getPairs();
+                	for(String rate : this.rating) {
+                		float tempRate = Float.parseFloat(rate);
+                		float upperLim = tempRate + (float) 1;
+                		for(int i = 0; i < pairs.length;i++) {
+                			if(pairs[i] != null) {
+                				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
+                				while(currList != null) {
+                					List<DataWrangler> tempList = pairs[i].getValue();
+                    				for(int j = 0; j < tempList.size(); j++) {
+                    					DataWrangler currNode = tempList.get(j);
+                    					if(currNode.getAvgVote() >= tempRate && currNode.getAvgVote() < upperLim) {
+                    						if(tempRatings.contains(currNode) == false) {
+                    							tempRatings.add(currNode);
+                    						}
+                    					}
+                    					
+                    				}
+                    				currList = currList.getNext();
+                    			}
                 			}
-            			}
-            		}
-            	}
+                		}
+                	}
+                }
             }
+            System.out.println("The rating has been added");
+        } else {
+            System.out.println("The rating has not been added");
         }
-        if(tempRatings.size() == 1) {
-        	this.singleCriteria = tempRatings;
-        	System.out.println(singleCriteria.size());
-        	//Remove later
-        	for(DataWrangler dat : this.singleCriteria) {
-        		System.out.print(dat.toString());
-        	}
+        if(tempRatings.size() > 0) {
+        	addMovies(tempRatings);
         }
         if(this.possibleRatings.size() > 0 && this.rating.size() > 0 && this.genre.size() > 0) {
         	addMovies(this.possibleRatings);
@@ -193,7 +174,7 @@ public class Backend implements BackendInterface{
     // Removing the rating added in the selection criteria, all the movies that meet the criteria for removal
     // are added into toRemove and then removed with removeAll
     public void removeAvgRating(String rating){
-    	List<DataWrangler> toRemove = new ArrayList<DataWrangler>();
+    	List<MovieInterface> toRemove = new ArrayList<MovieInterface>();
 		for(int i = 0; i < this.possibleRatings.size();i++) {
 			float tempRating = Float.parseFloat(rating);
 			float upperLimit = tempRating + (float)1;
@@ -210,7 +191,7 @@ public class Backend implements BackendInterface{
 	@Override
 	public void removeGenre(String genre) {
 		// TODO Auto-generated method stub
-		List<DataWrangler> toRemove = new ArrayList<DataWrangler>();
+		List<MovieInterface> toRemove = new ArrayList<MovieInterface>();
 		for(int i = 0; i < this.possibleGenres.size();i++) {
 			if(this.possibleGenres.get(i).getGenres().contains(genre) == true) {
 				toRemove.add(this.possibleGenres.get(i));
@@ -237,8 +218,8 @@ public class Backend implements BackendInterface{
 	
 	// Helper Function to remove all the desired Movie objects from each of the lists
 	
-	public void removeAll(List<DataWrangler> res) {
-		for(DataWrangler dw : res) {
+	public void removeAll(List<MovieInterface> res) {
+		for(MovieInterface dw : res) {
 			if(this.possibleGenres.contains(dw)) {
 				this.possibleGenres.remove(dw);
 			}
@@ -257,9 +238,6 @@ public class Backend implements BackendInterface{
 	
 	@Override
 	public List<MovieInterface> getThreeMovies(int startingIndex) {
-		// TODO Auto-generated method stub
-
-		//System.out.println(this.possibleMovies.size());
 		this.outputList.clear();
 		if((startingIndex  + 3) < this.possibleMovies.size()) {
 			for(int i = startingIndex; i < startingIndex + 3;i++) {
@@ -267,10 +245,7 @@ public class Backend implements BackendInterface{
 					this.outputList.add(this.possibleMovies.get(i));
 				}
 			}
-		} else if(startingIndex > this.possibleMovies.size() || startingIndex == this.possibleMovies.size()) {
-			System.out.println("Not a valid index");
-		}
-		else {
+		} else {
 			for(int j = startingIndex; j < this.possibleMovies.size();j++) {
 				this.outputList.add(this.possibleMovies.get(j));
 			}
@@ -307,8 +282,8 @@ public class Backend implements BackendInterface{
 	// Method called by the primary selectors (addGenre and addAvgRating)
 	// Main use is for adding to the possibleMovie list, which is the ArrayList that contains all the movies
 	// that meet the Rating and genere criteria
-	public void addMovies(List<DataWrangler> validMV) {
-		for(DataWrangler mv : validMV) {
+	public void addMovies(List<MovieInterface> validMV) {
+		for(MovieInterface mv : validMV) {
 			if(this.possibleMovies.contains(mv) == false) {
 				this.possibleMovies.add(mv);
 			}
