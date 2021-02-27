@@ -7,13 +7,13 @@ import java.util.Collections;
 
 public class Backend implements BackendInterface{
     // Instantiating all the variables for the backend
-    List<MovieInterface> possibleMovies;
+    
     List<String> genre;
     List<String> rating;
     List<MovieInterface> outputList;
-    List<DataWrangler> singleCriteria;
     hashTableMap<String, List<DataWrangler>> genreTable;
     List<DataWrangler> genreList;
+    List<MovieInterface> possibleMovies;
     List<MovieInterface> possibleRatings;
     List<MovieInterface> possibleGenres;
     List<DataWrangler> dataSet;
@@ -21,13 +21,14 @@ public class Backend implements BackendInterface{
     // Added a main function for testing the class
     // Reminder: Remove before final presentation/submission
     public static void main(String[] args){
-        try {
+        try {	
 			Backend tester2 = new Backend(new FileReader("C:\\Users\\zxcvt\\Documents\\CS400\\MovieMapper\\movies.csv"));
 	        System.out.println(tester2.getNumberOfMovies());
-	        //tester2.addGenre("Horror");
-	        tester2.addAvgRating("2");
+	        tester2.addGenre("Horror");
+	        //tester2.addGenre("Action");
+	        //tester2.addAvgRating("2");
 	        System.out.println(tester2.getNumberOfMovies());
-	        for(MovieInterface mv :tester2.getThreeMovies(22)) {
+	        for(MovieInterface mv :tester2.getThreeMovies(17)) {
 	        	System.out.println(mv.toString());
 	        }
 		} catch (FileNotFoundException e) {
@@ -46,7 +47,6 @@ public class Backend implements BackendInterface{
         MovieDataReader mvReader = new MovieDataReader();
 			try {
 				this.dataSet = mvReader.readDataSet(inputFile);
-				this.singleCriteria = new ArrayList<DataWrangler>();
 				// Creating the Hash table to hold the movie genre ratings 
 		        this.genreTable = new hashTableMap<String, List<DataWrangler>>();
 		        this.genreList = new ArrayList<DataWrangler>();
@@ -85,6 +85,7 @@ public class Backend implements BackendInterface{
         // genre or rating to select movies by. The movies returned by the back end will be all movies in the selected 
         // rating ranges that have all of the selected genres. If there is no genre selected, 
         // the list of movies returned by the backend is empty
+    	List<MovieInterface> tempGenres = new ArrayList<MovieInterface>();
     	if(this.genre.contains(genre) == false) {
     		this.genre.add(genre);
     		PairNodeList<String, List<DataWrangler>>[] pairs = this.genreTable.getPairs();
@@ -102,16 +103,30 @@ public class Backend implements BackendInterface{
         				}
         				currList = currList.getNext();
         			}
-    				
     			}
+    		}
+    		if(this.genre.size() > 0 && this.rating.size() == 0) {
+    			for(int i = 0; i < pairs.length;i++) {
+        			if(pairs[i]!= null) {
+        				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
+        				while(currList != null) {
+        					List<DataWrangler> tempList = pairs[i].getValue();
+            				for(int j = 0; j < tempList.size(); j++) {
+            					DataWrangler currNode = tempList.get(j);
+            					if(currNode.getGenres().contains(genre) && this.possibleGenres.contains(currNode) == false) {
+            						tempGenres.add(currNode);
+            					}
+            				}
+            				currList = currList.getNext();
+            			}
+        			}
+    			}
+    			addMovies(tempGenres);
     		}
     		System.out.println("The genre has been added");
     	} else {
             System.out.println("The genre has not been added");
         }
-    	if(this.genre.size() >= 1 && this.rating.size() == 0) {
-    		addMovies(this.possibleGenres);
-    	}
         
     }
     
@@ -131,31 +146,29 @@ public class Backend implements BackendInterface{
             	}
         	}
             if(this.rating.size() > 0 && this.genre.size() == 0) {
-            	if(this.rating.size() > 0 && this.possibleGenres.size() == 0) {
-            		PairNodeList<String, List<DataWrangler>>[] pairs = this.genreTable.getPairs();
-                	for(String rate : this.rating) {
-                		float tempRate = Float.parseFloat(rate);
-                		float upperLim = tempRate + (float) 1;
-                		for(int i = 0; i < pairs.length;i++) {
-                			if(pairs[i] != null) {
-                				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
-                				while(currList != null) {
-                					List<DataWrangler> tempList = pairs[i].getValue();
-                    				for(int j = 0; j < tempList.size(); j++) {
-                    					DataWrangler currNode = tempList.get(j);
-                    					if(currNode.getAvgVote() >= tempRate && currNode.getAvgVote() < upperLim) {
-                    						if(tempRatings.contains(currNode) == false) {
-                    							tempRatings.add(currNode);
-                    						}
-                    					}
-                    					
-                    				}
-                    				currList = currList.getNext();
-                    			}
+            	PairNodeList<String, List<DataWrangler>>[] pairs = this.genreTable.getPairs();
+            	for(String rate : this.rating) {
+            		float tempRate = Float.parseFloat(rate);
+            		float upperLim = tempRate + (float) 1;
+            		for(int i = 0; i < pairs.length;i++) {
+            			if(pairs[i] != null) {
+            				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
+            				while(currList != null) {
+            					List<DataWrangler> tempList = pairs[i].getValue();
+                				for(int j = 0; j < tempList.size(); j++) {
+                					DataWrangler currNode = tempList.get(j);
+                					if(currNode.getAvgVote() >= tempRate && currNode.getAvgVote() < upperLim) {
+                						if(tempRatings.contains(currNode) == false) {
+                							tempRatings.add(currNode);
+                						}
+                					}
+                					
+                				}
+                				currList = currList.getNext();
                 			}
-                		}
-                	}
-                }
+            			}
+            		}
+            	}
             }
             System.out.println("The rating has been added");
         } else {
@@ -165,6 +178,7 @@ public class Backend implements BackendInterface{
         	addMovies(tempRatings);
         }
         if(this.possibleRatings.size() > 0 && this.rating.size() > 0 && this.genre.size() > 0) {
+        	this.possibleMovies.clear();
         	addMovies(this.possibleRatings);
         }
         
@@ -283,9 +297,17 @@ public class Backend implements BackendInterface{
 	// Main use is for adding to the possibleMovie list, which is the ArrayList that contains all the movies
 	// that meet the Rating and genere criteria
 	public void addMovies(List<MovieInterface> validMV) {
-		for(MovieInterface mv : validMV) {
-			if(this.possibleMovies.contains(mv) == false) {
-				this.possibleMovies.add(mv);
+		if(this.genre.size() > 0 && this.rating.size() == 0) {
+			for(MovieInterface mv : this.possibleGenres) {
+				if(this.possibleMovies.contains(mv) == false) {
+					this.possibleMovies.add(mv);
+				}
+			}
+		} else {
+			for(MovieInterface mv : validMV) {
+				if(this.possibleMovies.contains(mv) == false) {
+					this.possibleMovies.add(mv);
+				}
 			}
 		}
 		Collections.sort(this.possibleMovies);
