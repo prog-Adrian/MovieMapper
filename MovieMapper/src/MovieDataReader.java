@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,11 +11,12 @@ import java.util.zip.DataFormatException;
 public class MovieDataReader implements MovieDataReaderInterface {
 
   @Override
-  public List<Movie> readDataSet(FileReader inputFileReader)
-      throws FileNotFoundException, IOException, DataFormatException {
+  public List<Movie> readDataSet(Reader inputFileReader)
+      throws IOException, DataFormatException {
     List<Movie> toReturn = new ArrayList<Movie>();
     
     BufferedReader reader = new BufferedReader(inputFileReader);
+    
     String headerLine = reader.readLine();
     int numColumns = headerLine.split(",").length;
     String row;

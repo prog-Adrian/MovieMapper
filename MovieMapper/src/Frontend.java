@@ -10,11 +10,8 @@ import java.util.Scanner;
 public class Frontend {
 
   public static void main(String[] args) {
-    // Scanner scanner = new Scanner(System.in);
     String filePath = "C:\\Users\\ozapa\\Downloads\\movies.csv";
     System.out.println(filePath);
-    // System.out.println("Please enter the path to the file which contains your movie database: ");
-    // filePath = scanner.nextLine();
 
     Backend be = null;
     try {
@@ -24,11 +21,6 @@ public class Frontend {
       System.out.println("File not found.");
       System.exit(0);
     }
-
-    // TEST CODE - DELETE BEFORE SUBMISSION
-
-    // TEST CODE - DELETE BEFORE SUBMISSION
-
     run(be);
   }
 
@@ -37,15 +29,15 @@ public class Frontend {
     String input;
     Mode currentMode = Mode.BASE;
     int currentIndex = 0;
-
     System.out.println(
         "Welcome to Movie Mapper! Check the bottom of this screen for the available commands.");
 
     while (true) {
       if (currentMode == Mode.BASE) {
+        
         System.out.println(
             "\nHere is a list of the top three movies in your selected dataset starting at number "
-                + (currentIndex + 1) + "\n");
+                + (currentIndex + 1) + ".\n");
 
         int counter = currentIndex + 1;
         if(backend.getThreeMovies(currentIndex).isEmpty()) {
@@ -61,7 +53,7 @@ public class Frontend {
         System.out.println(
             "\n[g] Enter genre select mode       [r] Enter rating select mode        [x] Exit the program");
         System.out.println(
-            "You can also type in the number next to display the next three movies after it.");
+            "You can also type in the number next to a movie to display the next three movies after it.");
         System.out.print("Command: ");
 
         input = scanner.next();
@@ -91,24 +83,19 @@ public class Frontend {
       }
 
       if (currentMode == Mode.GENRE_SELECT) {
-        System.out.println("Genres currently selected: \n");
-        if (backend.getGenres().isEmpty()) {
-          System.out.println("There are no genres selected.");
-        } else {
-          for (String s : backend.getGenres()) {
-            System.out.println(s);
-          }
-        }
-        System.out.println("\nGenres available to select: \n");
-        if (backend.getGenres().containsAll(backend.getAllGenres())) {
-          System.out.println("All genres are currently selected.");
-        } else {
+        System.out.println("\nList of Genres: \n");
+//        if (backend.getGenres().containsAll(backend.getAllGenres())) {
+//          System.out.println("All genres are currently selected.");
+        //} else {
           for (String s : backend.getAllGenres()) {
-            if (backend.getGenres().contains(s))
-              continue;
-            System.out.println(s);
+            if (backend.getGenres().contains(s)) {
+              System.out.println(s + " | Selected");
+            } else {
+              System.out.println(s + " | Not Selected");
+            }
+
           }
-        }
+        //}
         System.out.println(
             "\nType in the name of the genre exactly as it is shown to toggle it. Type 'x' to go back to the main menu.");
         System.out.print("Command: ");
@@ -117,6 +104,7 @@ public class Frontend {
 
         if (input.equalsIgnoreCase("x")) {
           currentMode = Mode.BASE;
+          currentIndex = 0;
         } else if (backend.getGenres().contains(input)) {
           backend.removeGenre(input);
         } else if (!backend.getGenres().contains(input) && backend.getAllGenres().contains(input)) {
@@ -132,9 +120,7 @@ public class Frontend {
           availableRatings.add(String.valueOf(i));
         }
         
-        
-        // System.out.println("You have chosen the Rating Select mode. Here are the available
-        // ratings for you to search by: \n");
+      
         System.out.println("Ratings currently selected: \n");
         if (backend.getAvgRatings().isEmpty()) {
           System.out.println("There are no ratings selected.");
@@ -161,8 +147,10 @@ public class Frontend {
 
         input = scanner.next();
 
-        if (input.equalsIgnoreCase("x"))
+        if (input.equalsIgnoreCase("x")) {
           currentMode = Mode.BASE;
+          currentIndex = 0;
+        }
 
         else {
           try {
