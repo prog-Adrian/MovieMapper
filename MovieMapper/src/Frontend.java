@@ -10,13 +10,10 @@ import java.util.Scanner;
 public class Frontend {
 
   public static void main(String[] args) {
-    String filePath = "C:\\Users\\ozapa\\Downloads\\movies.csv";
-    System.out.println(filePath);
 
     Backend be = null;
     try {
-      be = new Backend(new FileReader(filePath));
-      // be = new Backend(new FileReader(args[0]));
+      be = new Backend(new FileReader(args[0]));
     } catch (FileNotFoundException e) {
       System.out.println("File not found.");
       System.exit(0);
@@ -84,9 +81,6 @@ public class Frontend {
 
       if (currentMode == Mode.GENRE_SELECT) {
         System.out.println("\nList of Genres: \n");
-//        if (backend.getGenres().containsAll(backend.getAllGenres())) {
-//          System.out.println("All genres are currently selected.");
-        //} else {
           for (String s : backend.getAllGenres()) {
             if (backend.getGenres().contains(s)) {
               System.out.println(s + " | Selected");
@@ -120,24 +114,12 @@ public class Frontend {
           availableRatings.add(String.valueOf(i));
         }
         
-      
-        System.out.println("Ratings currently selected: \n");
-        if (backend.getAvgRatings().isEmpty()) {
-          System.out.println("There are no ratings selected.");
-        } else {
-          for (String s : backend.getAvgRatings()) {
-            System.out.println(s);
-          }
-        }
-        
-        System.out.println("\nRatings available to select: \n");
-        if(backend.getAvgRatings().containsAll(availableRatings)) {
-          System.out.println("All ratings are currently selected.");
-        } else {
-          for(String s : availableRatings) {
-            if(backend.getAvgRatings().contains(s))
-              continue;
-            System.out.println(s);
+        System.out.println("\nList of ratings: \n");
+        for(String s : availableRatings) {
+          if(backend.getAvgRatings().contains(s)) {
+            System.out.println(s + " | Selected");
+          } else {
+            System.out.println(s + " | Not Selected");
           }
         }
         
