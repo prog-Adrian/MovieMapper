@@ -24,24 +24,19 @@ public class Backend implements BackendInterface{
     public static void main(String[] args){
     	//String[] cmdArgs = new String[] {"C:\\\\Users\\\\zxcvt\\\\Documents\\\\CS400\\\\MovieMapper\\\\movies.csv", "Horror", "2", "0"};
     	//Backend tester1 = new Backend(cmdArgs);
-    	/*
         try {	
 			Backend tester2 = new Backend(new FileReader("C:\\Users\\zxcvt\\Documents\\CS400\\MovieMapper\\movies.csv"));
 	        System.out.println(tester2.getNumberOfMovies());
-	        //tester2.addGenre("Horror");
-	        //tester2.addGenre("Action");
-	        tester2.addAvgRating("2");
-	        tester2.addAvgRating("5");
-	        
+	        tester2.addGenre("Musical");
+	        tester2.addAvgRating("0");
 	        System.out.println(tester2.getNumberOfMovies());
-	        for(MovieInterface mv :tester2.getThreeMovies(20)) {
+	        for(MovieInterface mv :tester2.getThreeMovies(0)) {
 	        	System.out.println(mv.toString());
 	        }
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
         
     }
     
@@ -74,18 +69,6 @@ public class Backend implements BackendInterface{
 	        this.genre = new ArrayList<String>();
 	        this.rating = new ArrayList<String>();
 	        this.outputList = new ArrayList<MovieInterface>();
-	        this.addGenre(args[1]);
-	        this.addAvgRating(args[2]);
-	        for(MovieInterface mv : this.getThreeMovies(Integer.parseInt(args[3]))) {
-	        	System.out.println(mv.toString());
-	        }
-	        for(String g : this.getGenres()) {
-	        	System.out.println(g);
-	        }
-	        for(String avg: this.getAvgRatings()) {
-	        	System.out.println(avg);
-	        }
-	        System.out.println(this.getNumberOfMovies());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -145,22 +128,40 @@ public class Backend implements BackendInterface{
     	if(this.genre.contains(genre) == false) {
     		this.genre.add(genre);
     		PairNodeList<String, List<DataWrangler>>[] pairs = this.genreTable.getPairs();
-    		for(int i = 0; i < pairs.length;i++) {
-    			if(pairs[i]!= null) {
-    				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
-    				while(currList != null) {
-    					List<DataWrangler> tempList = pairs[i].getValue();
-        				for(int j = 0; j < tempList.size(); j++) {
-        					DataWrangler currNode = tempList.get(j);
-        					if(currNode.getGenres().contains(genre) && this.possibleGenres.contains(currNode) == false) {
-        						this.possibleGenres.add(currNode);
+    		if(this.rating.size() == 0) {
+    			for(int i = 0; i < pairs.length;i++) {
+        			if(pairs[i]!= null) {
+        				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
+        				while(currList != null) {
+        					List<DataWrangler> tempList = pairs[i].getValue();
+        					for(int j = 0; j < tempList.size(); j++) {
+        						DataWrangler currNode = tempList.get(j);
+        						if(currNode.getGenres().contains(genre) && this.possibleGenres.contains(currNode) == false) {
+        							this.possibleGenres.add(currNode);
+        						}
         					}
+        					currList = currList.getNext();
         				}
-        				currList = currList.getNext();
         			}
-    			}
+        		}
+    		} else {
+    			for(int i = 0; i < pairs.length;i++) {
+        			if(pairs[i]!= null) {
+        				PairNodeList<String, List<DataWrangler>> currList = pairs[i];
+        				while(currList != null) {
+        					List<DataWrangler> tempList = pairs[i].getValue();
+        					for(int j = 0; j < tempList.size(); j++) {
+        						DataWrangler currNode = tempList.get(j);
+        						if(currNode.getGenres().contains(genre) && this.possibleGenres.contains(currNode) == false && checkRange(currNode) == true) {
+        							this.possibleGenres.add(currNode);
+        						}
+        					}
+        					currList = currList.getNext();
+        				}
+        			}
+        		}
     		}
-    		addMovies(this.possibleGenres);
+			addMovies(this.possibleGenres);
     		System.out.println("The genre has been added");
     	} else {
             System.out.println("The genre has not been added");
@@ -172,16 +173,21 @@ public class Backend implements BackendInterface{
     // This sorts through all the possible genres set and finds the ratings that are within the range of rating + 1
     // also inclusive for the value of rating
     public void addAvgRating(String rating){
-        if(this.rating.contains(rating) == false && this.possibleMovies.size() > 0){
+        if(this.rating.contains(rating) == false){
             this.rating.add(rating);
-            for(String rat : this.rating) {
-        		for(MovieInterface dw : this.possibleMovies) {
-            		float upperLim = Float.parseFloat(rat) + (float) 1;
-            		if((dw.getAvgVote() >= Float.parseFloat(rat)) && (dw.getAvgVote() < upperLim) && this.validMovies.contains(dw) == false) {
-            			this.validMovies.add(dw);
-            		}
+            if(this.possibleMovies.size() > 0) {
+            	for(String rat : this.rating) {
+            		for(MovieInterface dw : this.possibleMovies) {
+                		float upperLim = Float.parseFloat(rat) + (float) 1;
+                		if((dw.getAvgVote() >= Float.parseFloat(rat)) && (dw.getAvgVote() < upperLim) && this.validMovies.contains(dw) == false) {
+                			this.validMovies.add(dw);
+                		}
+                	}
             	}
-        	}
+            }
+            if(this.validMovies.size() == 0) {
+            	this.possibleMovies.clear();
+            }
             System.out.println("The rating has been added");
         } else {
             System.out.println("The rating has not been added");
@@ -271,7 +277,19 @@ public class Backend implements BackendInterface{
 					this.outputList.add(this.validMovies.get(j));
 				}
 			}
-		} else {
+		} else if (this.rating.size() == 0 && this.genre.size() > 0){
+			if((startingIndex  + 3) < this.possibleMovies.size()) {
+				for(int i = startingIndex; i < startingIndex + 3;i++) {
+					if(!((startingIndex + 3) > this.possibleMovies.size())) {
+						this.outputList.add(this.possibleMovies.get(i));
+					}
+				}
+			} else {
+				for(int j = startingIndex; j < this.possibleMovies.size();j++) {
+					this.outputList.add(this.possibleMovies.get(j));
+				}
+			}
+		} else if(this.rating.size() > 0 && this.genre.size() > 0) {
 			if((startingIndex  + 3) < this.possibleMovies.size()) {
 				for(int i = startingIndex; i < startingIndex + 3;i++) {
 					if(!((startingIndex + 3) > this.possibleMovies.size())) {
@@ -305,8 +323,20 @@ public class Backend implements BackendInterface{
     	return ans;
 	}
 	
-	// Method that returns the size of the movies that meet the criteria of genre and rating set
+	public boolean checkRange(MovieInterface mv) {
+		if(this.rating.size() > 0) {
+			for(String rat : this.rating) {
+				float tempRating = Float.parseFloat(rat);
+				float upperLim = tempRating + (float) 1;
+				if(mv.getAvgVote() >= tempRating && mv.getAvgVote() < upperLim) {
+					return true;
+				}
+			}
+		} 
+		return false;
+	}
 	
+	// Method that returns the size of the movies that meet the criteria of genre and rating set
 	@Override
 	public int getNumberOfMovies() {
 		// TODO Auto-generated method stub
@@ -326,7 +356,7 @@ public class Backend implements BackendInterface{
 					this.possibleMovies.add(mv);
 				}
 			}
-		} else {
+		} else{
 			this.possibleMovies.clear();
 		}
 		
