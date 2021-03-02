@@ -1,40 +1,65 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+
+
+import java.io.*;
 import java.util.List;
 import java.util.zip.DataFormatException;
+import java.util.Arrays;
+import java.util.ArrayList;
 
-public class MovieDataReader implements MovieDataReaderInterface {
 
-  @Override
-  public List<Movie> readDataSet(Reader inputFileReader)
-      throws IOException, DataFormatException {
-    List<Movie> toReturn = new ArrayList<Movie>();
-    
-    BufferedReader reader = new BufferedReader(inputFileReader);
-    
-    String headerLine = reader.readLine();
-    int numColumns = headerLine.split(",").length;
-    String row;
-    while((row = reader.readLine()) != null) {
-      String[] data = row.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-      
-      if(data.length != numColumns) {
-        throw new DataFormatException("Inconsistent file format!");
-      }
-      
-      String genres = data[3].replaceAll("\"", "").replaceAll(" ", "");
-      String directors = data[7].replaceAll("\"", "");
-            
-      toReturn.add(new Movie(data[0], Integer.parseInt(data[2].trim()), Arrays.asList(genres.split(",")), directors, data[11].replaceAll("\"", ""), Float.parseFloat(data[12].trim())));
-    }
-    
-    return toReturn;
-  }
-  
+public class MovieDataReader implements MovieDataReaderInterface{
+
+
+
+	
+        public List<MovieInterface> readDataSet(Reader inputFileReader)throws FileNotFoundException, IOException, DataFormatException{
+        		//variable list: movielist - to be returned, line - used when splitting input to parameters for Movie, genrelist - list of all genres of movie, values[] - each element contains a vertain section of a given line (separated by commas)
+        		//continued: firstlineignore - to ensure the column headings aren't stored as a movie object, [g1,desc,d] are temporary arrays that have the sole purpose of separating unneeded extra punctuation like " or , from parameters before their input
+                ArrayList<MovieInterface> movielist = new ArrayList<MovieInterface>();
+                String line;
+                BufferedReader br= new BufferedReader(inputFileReader);
+                List<String> genrelist;
+                int firstlineignore =0;
+                        while ((line = br.readLine()) != null)
+                        {
+                        	if (firstlineignore == 0)
+                        	{}
+                        	else {
+                                Object[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+                                String[] g1 = ((String)values[3]).split(", ");
+                                String[] desc = ((String)values[11]).split("\"");
+                                if(g1.length>1)
+                                {
+                                	g1[0] = charRemoveAt(g1[0],0);
+                                	g1[g1.length-1] = charRemoveAt(g1[g1.length-1],g1[g1.length-1].length()-1);
+                                }
+                                if (desc.length > 1)
+                                {
+                                	values[11] = desc[1];
+                                
+                                }
+                                String[] d = ((String)values[7]).split("\"");
+                                if (d.length > 1)
+                                {
+                                	values[7] = d[1];
+                                
+                                }
+                                genrelist = Arrays.asList(g1);
+                                
+                                Movie a = new Movie((String)values[0],Integer.valueOf((String) values[2]),genrelist,(String)values[7], (String)values[11], Float.parseFloat((String) values[12]));
+                                movielist.add(a);
+                        	}
+                        	firstlineignore = 1;
+                                
+                        }
+                        
+
+                return movielist;
+        }
+        
+        //lil subhelper method to help remove extra quotation marks for genres with multiple items in the list
+        public static String charRemoveAt(String str, int p) {  
+            return str.substring(0, p) + str.substring(p + 1);  
+         }  
 }
+

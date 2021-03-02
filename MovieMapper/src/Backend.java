@@ -17,7 +17,7 @@ public class Backend implements BackendInterface{
     List<MovieInterface> possibleMovies;
     List<MovieInterface> possibleRatings;
     List<MovieInterface> possibleGenres;
-    List<Movie> dataSet;
+    List<MovieInterface> dataSet;
     
     // Added a main function for testing the class
     // Reminder: Remove before final presentation/submission
@@ -58,10 +58,10 @@ public class Backend implements BackendInterface{
 	        List<String> allGenres = getAllGenres();
 	        for(String aG : allGenres) {
 	        	this.genreList = new ArrayList<Movie>();
-	        	for(Movie dw: this.dataSet) {
+	        	for(MovieInterface dw: this.dataSet) {
 	        		for(String g : dw.getGenres()) {
 	        			if(aG.equals(g)) {
-	        				this.genreList.add(dw);
+	        				this.genreList.add((Movie) dw);
 	        			}
 	        		}
 	        	}
@@ -82,7 +82,7 @@ public class Backend implements BackendInterface{
     }
 
     // Backend constructor when taking an file/dataset for the input
-    public Backend(FileReader inputFile){
+    public Backend(Reader inputFile){
         // Instantiate the Data Wrangler object
         // MovieReaderInterface
         // Using input file
@@ -99,10 +99,10 @@ public class Backend implements BackendInterface{
 		        List<String> allGenres = getAllGenres();
 		        for(String aG : allGenres) {
 		        	this.genreList = new ArrayList<Movie>();
-		        	for(Movie dw: this.dataSet) {
+		        	for(MovieInterface dw: this.dataSet) {
 		        		for(String g : dw.getGenres()) {
 		        			if(aG.equals(g)) {
-		        				this.genreList.add(dw);
+		        				this.genreList.add((Movie) dw);
 		        			}
 		        		}
 		        	}
@@ -359,7 +359,7 @@ public class Backend implements BackendInterface{
 	@Override
 	public List<String> getAllGenres() {
 		List<String> ans = new ArrayList<String>();
-    	for(Movie dw : this.dataSet) {
+    	for(MovieInterface dw : this.dataSet) {
     		for(String g : dw.getGenres()) {
     			if(ans.contains(g) == false) {
     				ans.add(g);
