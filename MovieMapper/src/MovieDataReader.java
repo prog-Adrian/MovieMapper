@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
@@ -32,7 +33,6 @@ public class MovieDataReader implements MovieDataReaderInterface {
             
       toReturn.add(new Movie(data[0], Integer.parseInt(data[2].trim()), Arrays.asList(genres.split(",")), directors, data[11].replaceAll("\"", ""), Float.parseFloat(data[12].trim())));
     }
-    
     
     return toReturn;
   }

@@ -58,9 +58,9 @@ public class Movie implements MovieInterface {
   @Override
   public int compareTo(MovieInterface otherMovie) {
         if ((float)this.avgVote > (float)otherMovie.getAvgVote())
-          return 1;
-        else if ((float)this.avgVote < (float)otherMovie.getAvgVote())
           return -1;
+        else if ((float)this.avgVote < (float)otherMovie.getAvgVote())
+          return 1;
         return 0;
   }
   
