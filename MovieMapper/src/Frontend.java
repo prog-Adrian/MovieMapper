@@ -38,7 +38,7 @@ public class Frontend {
 
         int counter = currentIndex + 1;
         if(backend.getThreeMovies(currentIndex).isEmpty()) {
-          System.out.println("Add some search criteria by going to the genre or rating select modes!");
+          System.out.println("There are no movies available with your current search criteria!");
         }
         
         for (MovieInterface m : backend.getThreeMovies(currentIndex)) {
